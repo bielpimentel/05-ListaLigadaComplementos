@@ -129,12 +129,11 @@ void inserirElemento()
 	if (primeiro == NULL)
 	{
 		primeiro = novo;
-		ultimo = primeiro;
 	}
 	else {
 		ultimo->prox = novo;
-		ultimo = novo;
 	}
+	ultimo = novo;
 }
 
 void excluirElemento()
