@@ -8,6 +8,7 @@ struct NO {
 };
 
 NO* primeiro = NULL;
+NO* anterior = NULL;
 
 // headers
 void menu();
@@ -17,7 +18,7 @@ void exibirElementos();
 void inserirElemento();
 void excluirElemento();
 void buscarElemento();
-NO* posicaoElemento(int numero);
+NO* buscadorDeElemento(int numero);
 //--------------------------
 
 
@@ -125,29 +126,77 @@ void inserirElemento()
 	cin >> novo->valor;
 	novo->prox = NULL;
 
-	if (primeiro == NULL)
+	if (primeiro == NULL) // Não havendo elementos na lista, o novo elemento será o primeiro.
 	{
 		primeiro = novo;
 	}
-	else
+	else if (primeiro->valor > novo->valor) // Checa se o primeiro elemento da lista atual é maior que o novo
 	{
-		// procura o final da lista
 		NO* aux = primeiro;
-		while (aux->prox != NULL) {
+		primeiro = novo;
+		novo->prox = aux;
+	}
+	else // Adiciona o novo elemento de forma ordenada na lista
+	{
+		NO* aux = primeiro;
+		while (aux->prox != NULL && novo->valor > aux->prox->valor) {
 			aux = aux->prox;
 		}
+		novo->prox = aux->prox;
 		aux->prox = novo;
 	}
 }
 
 void excluirElemento()
 {
-
+	int numero;
+	cout << "Digite o numero a ser excluido da lista: ";
+	cin >> numero;
+	NO* paraExcluir = buscadorDeElemento(numero);
+	
+	if (paraExcluir->valor != numero) {
+		cout << "O numero digitado nao existe na lista." << endl;
+		return;
+	}
+	else if (primeiro == paraExcluir) {
+		primeiro = paraExcluir->prox;
+		free(paraExcluir);
+	}
+	else {
+		anterior->prox = paraExcluir->prox;
+		free(paraExcluir);
+	}
+	cout << "Elemento excluido!" << endl;
 }
 
 void buscarElemento()
 {
+	int numero;
+	cout << "Digite o numero a ser buscado na lista: ";
+	cin >> numero;
+	int paraBuscar = buscadorDeElemento(numero)->valor;
 
+	if (paraBuscar == numero) {
+		cout << "Elemento ENCONTRADO na lista!" << endl;
+	}
+	else {
+		cout << "Elemento NAO encontrado na lista!" << endl;
+	}
+}
+
+NO* buscadorDeElemento(int numero){
+
+	NO* aux = primeiro;
+	while (aux != NULL && numero > aux->valor) {
+		anterior = aux;
+		aux = aux->prox;
+	}
+	if (aux != NULL) {
+		return aux;
+	}
+	else {
+		return anterior;
+	}
 }
 
 
