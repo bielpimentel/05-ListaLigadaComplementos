@@ -122,28 +122,25 @@ void inserirElemento()
 		return;
 	}
 
-	cout << "Digite o elemento: ";
+	cout << "Digite o elemento a ser inserido: ";
 	cin >> novo->valor;
-	novo->prox = NULL;
 
-	if (primeiro == NULL) // Não havendo elementos na lista, o novo elemento será o primeiro.
+	if (primeiro == NULL || primeiro->valor > novo->valor)  // Não havendo elementos na lista ou o primeiro elemento sendo maior que o novo, este será definido como primeiro.
 	{
+		novo->prox = primeiro;
 		primeiro = novo;
+		cout << "Elemento adicionado!" << endl << endl;
+		return;
 	}
-	else if (primeiro->valor > novo->valor) // Checa se o primeiro elemento da lista atual é maior que o novo
-	{
-		NO* aux = primeiro;
-		primeiro = novo;
-		novo->prox = aux;
+
+	NO* posicao = buscadorDeElemento(novo->valor);  // Função de busca personalizada.
+	if (posicao && posicao->valor == novo->valor) {  // Checa se o elemento já existe na lista e impede que seja duplicado.
+		cout << "O numero digitado ja existe na lista." << endl << endl;
 	}
-	else // Adiciona o novo elemento de forma ordenada na lista
-	{
-		NO* aux = primeiro;
-		while (aux->prox != NULL && novo->valor > aux->prox->valor) {
-			aux = aux->prox;
-		}
-		novo->prox = aux->prox;
-		aux->prox = novo;
+	else {  // Posiciona o novo elemento em ordem crescente na lista.
+		novo->prox = anterior->prox;   
+		anterior->prox = novo;
+		cout << "Elemento adicionado!" << endl << endl;
 	}
 }
 
@@ -152,21 +149,21 @@ void excluirElemento()
 	int numero;
 	cout << "Digite o numero a ser excluido da lista: ";
 	cin >> numero;
-	NO* paraExcluir = buscadorDeElemento(numero);
+	NO* paraExcluir = buscadorDeElemento(numero);  // Função de busca personalizada.
 	
-	if (paraExcluir->valor != numero) {
-		cout << "O numero digitado nao existe na lista." << endl;
+	if (paraExcluir == NULL || paraExcluir->valor != numero) {  // Checa se o elemento já existe na lista.
+		cout << "O numero digitado nao existe na lista." << endl << endl;
 		return;
 	}
-	else if (primeiro == paraExcluir) {
+	else if (primeiro == paraExcluir) {  // Checa se o elemento a ser excluído é o primeiro da lista.
 		primeiro = paraExcluir->prox;
 		free(paraExcluir);
 	}
 	else {
-		anterior->prox = paraExcluir->prox;
+		anterior->prox = paraExcluir->prox;  // Prossegue normalmente com a exclusão, realocando os elementos e ponteiros.
 		free(paraExcluir);
 	}
-	cout << "Elemento excluido!" << endl;
+	cout << "Elemento excluido!" << endl << endl;
 }
 
 void buscarElemento()
@@ -174,29 +171,24 @@ void buscarElemento()
 	int numero;
 	cout << "Digite o numero a ser buscado na lista: ";
 	cin >> numero;
-	int paraBuscar = buscadorDeElemento(numero)->valor;
+	NO* paraBuscar = buscadorDeElemento(numero);
 
-	if (paraBuscar == numero) {
-		cout << "Elemento ENCONTRADO na lista!" << endl;
+	if (paraBuscar && paraBuscar->valor == numero) {  
+		cout << "Elemento ENCONTRADO na lista!" << endl << endl;
 	}
 	else {
-		cout << "Elemento NAO encontrado na lista!" << endl;
+		cout << "Elemento NAO encontrado na lista!" << endl << endl;
 	}
 }
 
-NO* buscadorDeElemento(int numero){
+NO* buscadorDeElemento(int numero){   // Função de busca personalizada.
 
 	NO* aux = primeiro;
 	while (aux != NULL && numero > aux->valor) {
 		anterior = aux;
 		aux = aux->prox;
 	}
-	if (aux != NULL) {
-		return aux;
-	}
-	else {
-		return anterior;
-	}
+	return aux;
 }
 
 
